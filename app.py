@@ -1,24 +1,24 @@
-import yaml
 from flask import Flask
 
 app = Flask(__name__)
 
 
 def get_bookmarks_by_tag() -> dict:
-    with open('/home/anthony/.config/bookmarks/bookmarks.yml', 'r') as f:
-        data = yaml.load(f, Loader=yaml.FullLoader)
-        output = {}
-        for key in data:
-            for tag in data[key]['tags']:
-                if tag not in output.keys():
+    output = {}
+    with open('/home/anthony/.config/bookmarks/bookmarks.txt', 'r') as f:
+        for line in f.readlines():
+            record = line.split(' ')
+            tags = record[2].split(',')[0:-1]
+            for tag in tags:
+                if tag not in output.keys() and tag != '':
                     output[tag] = []
 
                 output[tag].append({
-                    'name': key,
-                    'url': data[key]['url'],
-                    'tags': data[key]['tags'],
+                    'name': record[0],
+                    'url': record[1],
+                    'tags': tags,
                 })
-        return output
+    return dict(sorted(output.items()))
 
 
 @app.route("/")
@@ -29,9 +29,7 @@ def index():
         html += f'<h1>{tag}</h1>'
         for bookmark in bookmarks_by_tag[tag]:
             html += '<div>'
-            html += f'<a href={bookmark["url"]}>{bookmark["name"]}</a>'
-            html += ' - tags: ['
-            for bookmark_tag in bookmark['tags']:
-                html += f'{bookmark_tag}, '
-            html += ']</div>'
+            html += f'<a href=https://{bookmark["url"]} target="_blank">{bookmark["name"]}</a>'
+            html += f' - tags: [{", ".join(bookmark["tags"])}]'
+            html += '</div>'
     return html
