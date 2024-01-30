@@ -22,7 +22,7 @@ def get_bookmarks_by_tag() -> dict:
 
 
 @app.route("/")
-def hello_world():
+def index():
     bookmarks_by_tag = get_bookmarks_by_tag()
     html = ''
     for tag in bookmarks_by_tag:

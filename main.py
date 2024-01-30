@@ -1,18 +1,20 @@
+import json
 import yaml
 
-def get_bookmarks_by_tag() -> dict:
-    with open('/home/anthony/.config/bookmarks/bookmarks.yml', 'r') as f:
-        data = yaml.load(f, Loader=yaml.FullLoader)
-        output = {}
-        for key in data:
-            for tag in data[key]['tags']:
-                if tag not in output.keys():
-                    output[tag] = []
-
-                output[tag].append(dict({
-                    'name': key,
-                }))
-        return output
+def load_file():
+    with open("/home/anthony/.config/bookmarks/Bookmarks", "r") as f:
+        return json.load(f)['roots']['bookmark_bar']['children']
 
 if __name__ == '__main__':
-    print(get_bookmarks_by_tag())
+    # yaml style
+    # name:
+    #   url: url_value
+    #   tags: [tag_values]
+    output = {}
+    for folder in load_file():
+        for bookmark in folder['children']:
+            output[bookmark['name']] = {
+                'url': bookmark['url'],
+                'tags': [folder['name']],
+            }
+    print(yaml.dump(output))
