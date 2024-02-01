@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 def get_bookmarks_by_tag() -> dict:
     output = {}
-    with open('/home/anthony/.config/bookmarks/bookmarks.txt', 'r') as f:
+    with open('/home/anthony/.config/bookmarks.txt', 'r') as f:
         for line in f.readlines():
             record = line.split(' ')
             tags = record[2].split(',')[0:-1]
@@ -29,7 +29,7 @@ def index():
         html += f'<h1>{tag}</h1>'
         for bookmark in bookmarks_by_tag[tag]:
             html += '<div>'
-            html += f'<a href=https://{bookmark["url"]} target="_blank">{bookmark["name"]}</a>'
+            html += f'<a href={bookmark["url"]} target="_blank">{bookmark["name"]}</a>'
             html += f' - tags: [{", ".join(bookmark["tags"])}]'
             html += '</div>'
     return html
